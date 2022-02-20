@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object AppModule {
     private const val PREF_NAME = "tmdb_task_prefs"
 
-    @Singleton
+
     @Provides
     fun provideSharedPreference(
         @ApplicationContext context: Context

@@ -8,12 +8,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavourite(favouriteEntity: FavouriteEntity): Long
+    suspend fun insertFavourite(favouriteEntity: FavouriteEntity)
 
     @Query("select * from favourites")
-    fun getAllFavourites(): Flow<MutableList<FavouriteEntity>>
+    fun getAllFavourites(): List<FavouriteEntity>
 
     @Query("""select * from favourites where _id=:id""")
     fun checkIfFavourite(id: Long): Boolean

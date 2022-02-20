@@ -3,27 +3,30 @@ package uz.instat.tmdb.presentation.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import uz.fizmasoft.dyhxx.base.BaseFragment
+import uz.instat.tmdb.R
 import uz.instat.tmdb.data.network.NetworkConstants
 import uz.instat.tmdb.databinding.FragmentMovieInfoBinding
 import uz.instat.tmdb.domein.model.Movies
 import uz.instat.tmdb.framework.MoviesViewModel
 import uz.instat.tmdb.framework.util.NetworkResult
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
-class MovieInfoFragment : BaseFragment<FragmentMovieInfoBinding>(FragmentMovieInfoBinding::inflate),
-    View.OnClickListener {
+class MovieInfoFragment :
+    BaseFragment<FragmentMovieInfoBinding>(FragmentMovieInfoBinding::inflate) {
 
     private val viewModel: MoviesViewModel by activityViewModels()
     private val args: MovieInfoFragmentArgs by navArgs()
-
     private var movie: Movies.Result? = null
+    private var isLiked = false
 
     @Inject
     lateinit var manager: RequestManager
@@ -35,35 +38,16 @@ class MovieInfoFragment : BaseFragment<FragmentMovieInfoBinding>(FragmentMovieIn
         super.onCreate(savedInstanceState)
         movie = viewModel.getMovie(args.id)
         viewModel.getMovieCredits(args.id)
+        viewModel.checkIsLiked(args.id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupViews()
         setupObservers()
+        setListeners()
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("TAG", "onResume ")
-    }
-    override fun onPause() {
-        super.onPause()
-        Log.d("TAG", "onPause: ")
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("TAG", "onDestroy: ")
-    }
-    override fun onStop() {
-        super.onStop()
-        Log.d("TAG", "onStop: ")
-    }
-    override fun onStart() {
-        super.onStart()
-        Log.d("TAG", "onStart: ")
-    }
     private fun setupObservers() {
         viewModel.responseMovieCredits.observe(viewLifecycleOwner) {
             when (it) {
@@ -77,11 +61,18 @@ class MovieInfoFragment : BaseFragment<FragmentMovieInfoBinding>(FragmentMovieIn
                 }
             }
         }
+        viewModel.isLiked.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.ibLike.setImageResource(R.drawable.ic_like)
+            } else {
+                binding.ibLike.setImageResource(R.drawable.ic_unlike)
+            }
+            isLiked = it
+        }
     }
 
     private fun setupViews() = with(binding) {
         recyclerCredits.adapter = adapter
-        imageBack.setOnClickListener(this@MovieInfoFragment)
         manager.load(NetworkConstants.BASE_IMG_URL + movie?.backdropPath)
             .into(imagePoster)
         tvTitle.text = movie?.title
@@ -90,16 +81,30 @@ class MovieInfoFragment : BaseFragment<FragmentMovieInfoBinding>(FragmentMovieIn
         tvOverview.text = movie?.overview
     }
 
-    override fun onClick(v: View?) {
-        with(binding) {
-            when (v?.id) {
-                imageBack.id -> {
-                    findNavController().popBackStack()
+    private fun setListeners() {
+        binding.imageBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.ibLike.setOnClickListener {
+            if (!isLiked) {
+                movie?.let { it1 ->
+                    viewModel.insertFavouriteMovie(
+                        it1.id,
+                        it1.originalTitle,
+                        it1.posterPath,
+                        it1.releaseDate,
+                        it1.voteAverage
+                    )
                 }
-                else -> {
-                }
+                binding.ibLike.setImageResource(R.drawable.ic_like)
+                isLiked = true
+            } else {
+                movie?.let { it1 -> movie?.id?.let { it2 -> viewModel.deleteFavourite(it2) } }
+                binding.ibLike.setImageResource(R.drawable.ic_unlike)
+                isLiked = false
             }
         }
+
     }
 
 }

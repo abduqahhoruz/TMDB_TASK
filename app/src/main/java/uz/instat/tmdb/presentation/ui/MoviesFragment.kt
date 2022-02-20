@@ -1,11 +1,7 @@
 package uz.instat.tmdb.presentation.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,8 +14,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MoviesFragment : BaseFragment<FragmentMoviesBinding>(FragmentMoviesBinding::inflate) {
-
-
     private val viewModel: MoviesViewModel by activityViewModels()
 
     @Inject
@@ -30,10 +24,23 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>(FragmentMoviesBinding
         viewModel.getDiscoverMovies()
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.playingMovies.adapter = adapter
+        adapter.setListener(object : MovieClicked {
+            override fun movieClicked(id: String) {
+                findNavController().navigate(MoviesFragmentDirections.actionMoviesToMovieInfo(id))
+            }
+        })
+        viewModel.responseMovieApi.observe(viewLifecycleOwner) { it ->
+            when (it) {
+                is NetworkResult.Success -> {
+                    it.data?.let { it1 -> adapter.setList(it1.results) }
+                }
+                is NetworkResult.Error->{}
+                is NetworkResult.Loading->{}
+            }
+        }
         binding.searchView.setOnQueryTextListener(
             DebouncingQueryTextListener(
                 this@MoviesFragment.lifecycle
@@ -47,21 +54,6 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>(FragmentMoviesBinding
                 }
             }
         )
-        binding.playingMovies.adapter = adapter
-        adapter.setListener(object : MovieClicked {
-            override fun movieClicked(id: String) {
-                findNavController().navigate(MoviesFragmentDirections.actionMoviesToMovieInfo(id))
-            }
-        })
-        viewModel.responseMovieApi.observe(viewLifecycleOwner) { it ->
-            when (it) {
-                is NetworkResult.Success -> {
-                    it.data?.let { it1 -> adapter.setList(it1.results) }
-                }
-            }
-
-            /*  adapter.setList(it.results)*/
-        }
     }
 
 

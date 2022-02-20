@@ -22,6 +22,7 @@ object DatabaseModule {
     ): FavouriteDatabase {
         return Room.databaseBuilder(context, FavouriteDatabase::class.java, "favourites")
             .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
             .build()
     }
 }
