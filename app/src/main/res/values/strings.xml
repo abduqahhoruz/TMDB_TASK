@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DataPrimeTask</string>
+    <string name="app_name">TMDB_TASK</string>
     <!-- Strings used for fragments for navigation -->
     <string name="movies">Movies</string>
     <string name="movie_info">Movie Info</string>
