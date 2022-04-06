@@ -16,7 +16,7 @@ class MoviesRepoImpl @Inject constructor(
 ) : MoviesRepo, BaseApiResponse() {
 
     override suspend fun getPopularMovies(): Flow<NetworkResult<Movies>> {
-        return flow<NetworkResult<Movies>> {
+        return flow {
             emit(safeApiCall { movieDataSource.getPopularMovies() })
         }.flowOn(Dispatchers.IO)
     }

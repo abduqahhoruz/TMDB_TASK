@@ -11,16 +11,13 @@ import com.bumptech.glide.RequestManager
 import uz.instat.tmdb.R
 import uz.instat.tmdb.data.local.FavouriteEntity
 import uz.instat.tmdb.data.network.NetworkConstants.BASE_IMG_URL
-import uz.instat.tmdb.domein.model.Movies
 import javax.inject.Inject
 
 class FavouritesAdapter @Inject constructor(
     private val manager: RequestManager
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
+
     private var favouriteClicked: FavouriteClicked? = null
 
     fun setListener(favouriteClicked: FavouriteClicked) {
@@ -28,6 +25,7 @@ class FavouritesAdapter @Inject constructor(
     }
 
     private var favourites: List<FavouriteEntity> = listOf()
+
     @SuppressLint("NotifyDataSetChanged")
     fun setList(favourites: List<FavouriteEntity>) {
         this.favourites = favourites

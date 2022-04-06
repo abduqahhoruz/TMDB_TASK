@@ -1,9 +1,7 @@
 package uz.instat.tmdb.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,7 +15,6 @@ import uz.instat.tmdb.domein.model.Movies
 import uz.instat.tmdb.framework.MoviesViewModel
 import uz.instat.tmdb.framework.util.NetworkResult
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class MovieInfoFragment :
@@ -99,7 +96,7 @@ class MovieInfoFragment :
                 binding.ibLike.setImageResource(R.drawable.ic_like)
                 isLiked = true
             } else {
-                movie?.let { it1 -> movie?.id?.let { it2 -> viewModel.deleteFavourite(it2) } }
+                movie?.let { movie?.id?.let { it2 -> viewModel.deleteFavourite(it2) } }
                 binding.ibLike.setImageResource(R.drawable.ic_unlike)
                 isLiked = false
             }

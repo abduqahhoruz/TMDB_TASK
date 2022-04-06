@@ -8,8 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class MovieCredits(
     @SerializedName("cast")
     val cast: List<Cast>
-)
-{
+) {
     @Keep
     data class Cast(
         @SerializedName("adult")

@@ -32,7 +32,7 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>(FragmentMoviesBinding
                 findNavController().navigate(MoviesFragmentDirections.actionMoviesToMovieInfo(id))
             }
         })
-        viewModel.responseMovieApi.observe(viewLifecycleOwner) { it ->
+        viewModel.responseMovieApi.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
                     it.data?.let { it1 -> adapter.setList(it1.results) }

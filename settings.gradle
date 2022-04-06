@@ -1,2 +1,2 @@
-rootProject.name = "DataPrimeTask"
+rootProject.name = "TMDB_TASK"
 include ':app'

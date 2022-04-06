@@ -1,12 +1,9 @@
 package uz.instat.tmdb.framework
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -15,7 +12,6 @@ import uz.instat.tmdb.data.repository.FavouritesRepo
 import uz.instat.tmdb.data.repository.MoviesRepo
 import uz.instat.tmdb.domein.model.MovieCredits
 import uz.instat.tmdb.domein.model.Movies
-import uz.instat.tmdb.framework.util.NetworkResult
 import uz.instat.tmdb.framework.util.SingleLiveEvent
 import java.lang.Exception
 import javax.inject.Inject
